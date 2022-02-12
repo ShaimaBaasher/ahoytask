@@ -23,11 +23,6 @@ data class MainData(
     var fahrenheit : String? = "0",
     @SerializedName("humidity") var humidity : String? = null, ) : Parcelable
 
-data class WeatherData(
-    @SerializedName("main") var main : String? = null,
-    @SerializedName("icon") var icon : String? = null,
-)
-
 @Parcelize
 data class WindData(
     @SerializedName("speed") var speed : String? = null,

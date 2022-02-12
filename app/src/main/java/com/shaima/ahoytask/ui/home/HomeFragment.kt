@@ -100,8 +100,8 @@ class HomeFragment : Fragment() {
         if (bundle == null) {
             observeState(homeViewModel)
         } else {
-//            handelWeather(bundle)
-            homeViewModel.getWeatherByName(bundle.city.name.toString())
+            handelWeather(bundle)
+//            homeViewModel.getWeatherByName(bundle.city.name.toString())
         }
     }
 
