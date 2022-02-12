@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Weather app</string>
+    <string name="title_activity_weather">WeatherActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="enter_city_name">Enter city name</string>
+    <string name="title_location_permission">title_location_permission</string>
+    <string name="text_location_permission">text_location_permission</string>
+    <string name="ok">ok</string>
+    <string name="needs_location_for_better_service">needs_location_for_better_service</string>
+    <string name="notification_title">Weather App</string>
+    <string name="notification_subtitle">Today Weather</string>
+    <string name="title_setting">Settings</string>
+    <string name="title_fave">Favorite</string>
+    <string name="toggle_temperature_units">Toggle temperature units</string>
+    <string name="celsius">\u00B0 C</string>
+    <string name="fahrenheit">\u00B0 F</string>
+</resources>
