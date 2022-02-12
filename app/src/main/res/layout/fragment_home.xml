@@ -68,6 +68,7 @@
               android:layout_width="22dp"
               android:layout_height="22dp"
               android:textAlignment="center"
+              android:visibility="gone"
               android:src="@drawable/ic_baseline_favorite_border_24"
               android:textSize="@dimen/_20sdp"
               app:tint="@color/white" />

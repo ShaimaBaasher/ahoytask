@@ -21,6 +21,7 @@
         <activity
             android:name=".WeatherActivity"
             android:exported="true"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:label="@string/title_activity_weather" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

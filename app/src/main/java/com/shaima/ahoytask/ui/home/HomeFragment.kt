@@ -1,23 +1,23 @@
 package com.shaima.ahoytask.ui.home
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.location.Location
-import android.net.ConnectivityManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -35,7 +35,6 @@ import com.google.gson.Gson
 import com.shaima.ahoytask.R
 import com.shaima.ahoytask.databinding.FragmentHomeBinding
 import com.shaima.ahoytask.domain.core.common.NotifyWork
-import com.shaima.ahoytask.domain.settings.usecase.ChangeTemperatureUnitUseCase
 import com.shaima.ahoytask.domain.settings.usecase.GetSettingsUseCase
 import com.shaima.ahoytask.domain.state.HomeFavFragmentState
 import com.shaima.ahoytask.ui.home.adapters.HomeWeatherAdapter
@@ -43,23 +42,17 @@ import com.shaima.ahoytask.utils.ext.gone
 import com.shaima.ahoytask.utils.ext.showToast
 import com.shaima.ahoytask.utils.ext.visible
 import com.shaima.api.repository.Utils
-import com.squareup.picasso.Picasso
 import com.ydhnwb.cleanarchitectureexercise.domain.login.entity.WeatherEntity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.temporal.ChronoUnit
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
-    private lateinit var mDigree: String
+    private var bundle: WeatherEntity? = null
     private lateinit var homeViewModel: HomeViewModel
     private var _binding: FragmentHomeBinding? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -87,22 +80,27 @@ class HomeFragment : Fragment() {
 
         NotifyWork.alarm(requireContext())
         checkLocationPermission()
+        setupRecyclerView()
         getParams()
 //        checkNetwork()
         setupSearch()
-        setupRecyclerView()
         return root
     }
 
+    override fun onStart() {
+        super.onStart()
+        homeViewModel.getSettings()
+    }
+
     private fun getParams() {
-        val bundle = arguments?.getParcelable<WeatherEntity>("weather")
+         bundle = arguments?.getParcelable("weather")
 
         if (bundle == null) {
             observeState(homeViewModel)
         } else {
-            handelWeather(bundle)
-//            homeViewModel.getWeatherByName(bundle.city.name.toString())
+            handelWeather(bundle!!)
         }
+        arguments?.remove("weather")
     }
 
     private fun getFromDb() {
@@ -128,6 +126,8 @@ class HomeFragment : Fragment() {
         binding.edtSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (Utils.checkValid(binding.edtSearch.text.toString().trim())) {
+                    binding.edtSearch.clearFocus()
+                    Utils.hideKeyboardFrom(requireContext(), binding.root)
                     homeViewModel.getWeatherByName(
                         binding.edtSearch.text.toString().trim().toLowerCase()
                     )
@@ -177,7 +177,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun handelWeather(weatherEntity: WeatherEntity) {
-        Log.d("weatherEntity.list", Gson().toJson(weatherEntity.list))
+        var mDigree = "0"
+        Log.d("handelWeather", "handelWeather")
         binding.weatherRecyclerView.adapter?.let {
             if (it is HomeWeatherAdapter) {
                 it.updateList(
@@ -186,8 +187,10 @@ class HomeFragment : Fragment() {
             }
         }
 
+
         homeViewModel.viewStatse.observe(viewLifecycleOwner, Observer {
             if (it != null) {
+                Log.d("viewStatse", it.toString())
                 if (it)
                     mDigree = "${weatherEntity.list[0].main?.temp} °C"
                 else mDigree = "${weatherEntity.list[0].main?.fahrenheit} °F"
@@ -195,11 +198,13 @@ class HomeFragment : Fragment() {
         })
 
         textView.text = weatherEntity.city.name!!.trim()
-        binding.textTemp.text = if (::mDigree.isInitialized) mDigree else "0"
+        binding.textTemp.text = if (useCase.invoke()) "${weatherEntity.list[0].main?.temp} °C" else "${weatherEntity.list[0].main?.fahrenheit} °F"
         binding.textTempDesc.text = weatherEntity.list[0].weather!![0].main
         binding.textHum.text = "${weatherEntity.list[0].main?.humidity} H"
 
-        listiners(weatherEntity)
+        if (bundle == null) {
+            listiners(weatherEntity)
+        }
     }
 
     private fun handleLoading(isLoading: Boolean) {

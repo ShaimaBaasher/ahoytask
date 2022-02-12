@@ -38,10 +38,10 @@ class HomeViewModel @Inject constructor(private val getWeatherUseCase: GetWeathe
     val viewStatse: LiveData<Boolean>
         get() = _viewState
 
-    init {
+
+    fun getSettings() {
         _viewState.value = getSettingsUseCase.invoke()
     }
-
     private fun setLoading() {
         state.value = HomeFavFragmentState.IsLoading(true)
     }
