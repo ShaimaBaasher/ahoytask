@@ -31,10 +31,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'API_BASE_URL', '"https://api.openweathermap.org/data/2.5/"'
         }
-//        dev {
-//            minifyEnabled false
-//            buildConfigField 'String', 'API_BASE_URL', '"http://api.openweathermap.org/data/2.5/"'
-//        }
+        dev {
+            minifyEnabled false
+            buildConfigField 'String', 'API_BASE_URL', '"http://api.openweathermap.org/data/2.5/"'
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
