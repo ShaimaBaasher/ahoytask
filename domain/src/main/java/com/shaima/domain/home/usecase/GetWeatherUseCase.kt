@@ -10,7 +10,4 @@ class GetWeatherUseCase @Inject constructor(private val weatherRepository: Weath
     suspend fun execute(lat : String, lon : String): Flow<BaseResult<WeatherEntity>>  {
         return weatherRepository.getWeatherByLocation(lat, lon)
     }
-    suspend fun getWeatherByName(cityName : String): Flow<BaseResult<WeatherEntity>>  {
-        return weatherRepository.getWeatherByCityName(cityName)
-    }
 }

@@ -3,9 +3,7 @@ package com.ydhnwb.cleanarchitectureexercise.domain.login.entity
 import android.os.Parcelable
 import androidx.room.*
 import com.shaima.ahoytask.data.home.CityResponse
-import com.shaima.ahoytask.data.home.MainData
 import com.shaima.ahoytask.data.home.WeatherResponse
-import com.shaima.ahoytask.utils.Converters
 import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "weather_table")

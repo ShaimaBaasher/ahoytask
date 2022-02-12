@@ -6,6 +6,7 @@ import com.shaima.ahoytask.data.home.MainData
 import kotlinx.coroutines.flow.*
 import com.shaima.ahoytask.domain.core.BaseResult
 import com.shaima.ahoytask.domain.home.usecase.GetPlacesUseCase
+import com.shaima.ahoytask.domain.home.usecase.GetWeatherByName
 import com.shaima.ahoytask.domain.home.usecase.StoreWeatherData
 import com.shaima.ahoytask.domain.settings.usecase.GetSettingsUseCase
 import com.shaima.ahoytask.domain.state.HomeFavFragmentState
@@ -16,12 +17,15 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val getWeatherUseCase: GetWeatherUseCase,
-                                        private val storeWeatherData: StoreWeatherData,
-                                        private val getPlacesUseCase: GetPlacesUseCase,
-                                        private val getSettingsUseCase: GetSettingsUseCase
-): ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val getWeatherByName: GetWeatherByName,
+    private val getWeatherUseCase: GetWeatherUseCase,
+    private val storeWeatherData: StoreWeatherData,
+    private val getPlacesUseCase: GetPlacesUseCase,
+    private val getSettingsUseCase: GetSettingsUseCase
+) : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is home Fragment"
@@ -38,10 +42,10 @@ class HomeViewModel @Inject constructor(private val getWeatherUseCase: GetWeathe
     val viewStatse: LiveData<Boolean>
         get() = _viewState
 
-
     fun getSettings() {
         _viewState.value = getSettingsUseCase.invoke()
     }
+
     private fun setLoading() {
         state.value = HomeFavFragmentState.IsLoading(true)
     }
@@ -54,7 +58,7 @@ class HomeViewModel @Inject constructor(private val getWeatherUseCase: GetWeathe
         state.value = HomeFavFragmentState.ShowToast(message)
     }
 
-    fun getWeatherData(lat : String, lon : String) {
+    fun getWeatherData(lat: String, lon: String) {
         viewModelScope.launch {
             getWeatherUseCase.execute(lat, lon)
                 .onStart {
@@ -66,18 +70,21 @@ class HomeViewModel @Inject constructor(private val getWeatherUseCase: GetWeathe
                 }
                 .collect {
                     hideLoading()
-                    when(it) {
-                        is BaseResult.Success -> state.value = HomeFavFragmentState.SuccessGetWeather(it.data)
-                        is BaseResult.ErrorMsg -> state.value = HomeFavFragmentState.ShowToast(it.msg)
-                        is BaseResult.Error ->  state.value = HomeFavFragmentState.ShowToast(it.exception.localizedMessage)
+                    when (it) {
+                        is BaseResult.Success -> state.value =
+                            HomeFavFragmentState.SuccessGetWeather(it.data)
+                        is BaseResult.ErrorMsg -> state.value =
+                            HomeFavFragmentState.ShowToast(it.msg)
+                        is BaseResult.Error -> state.value =
+                            HomeFavFragmentState.ShowToast(it.exception.localizedMessage)
                     }
                 }
         }
     }
 
-    fun getWeatherByName(cityName : String) {
+    fun getWeatherByName(cityName: String) {
         viewModelScope.launch {
-            getWeatherUseCase.getWeatherByName(cityName)
+            getWeatherByName.invoke(cityName)
                 .onStart {
                     setLoading()
                 }
@@ -87,10 +94,13 @@ class HomeViewModel @Inject constructor(private val getWeatherUseCase: GetWeathe
                 }
                 .collect {
                     hideLoading()
-                    when(it) {
-                        is BaseResult.Success -> state.value = HomeFavFragmentState.SuccessGetWeather(it.data)
-                        is BaseResult.ErrorMsg -> state.value = HomeFavFragmentState.ShowToast(it.msg)
-                        is BaseResult.Error ->  state.value = HomeFavFragmentState.ShowToast(it.exception.localizedMessage)
+                    when (it) {
+                        is BaseResult.Success -> state.value =
+                            HomeFavFragmentState.SuccessGetWeather(it.data)
+                        is BaseResult.ErrorMsg -> state.value =
+                            HomeFavFragmentState.ShowToast(it.msg)
+                        is BaseResult.Error -> state.value =
+                            HomeFavFragmentState.ShowToast(it.exception.localizedMessage)
                     }
                 }
         }
@@ -116,4 +126,3 @@ class HomeViewModel @Inject constructor(private val getWeatherUseCase: GetWeathe
         }
         .asLiveData(viewModelScope.coroutineContext)
 }
-

@@ -34,7 +34,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
 import com.shaima.ahoytask.R
 import com.shaima.ahoytask.databinding.FragmentHomeBinding
-import com.shaima.ahoytask.domain.core.common.NotifyWork
 import com.shaima.ahoytask.domain.settings.usecase.GetSettingsUseCase
 import com.shaima.ahoytask.domain.state.HomeFavFragmentState
 import com.shaima.ahoytask.ui.home.adapters.HomeWeatherAdapter
@@ -78,11 +77,10 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
         textView = binding.textCity
 
-        NotifyWork.alarm(requireContext())
+//        NotifyWork.alarm(requireContext())
         checkLocationPermission()
         setupRecyclerView()
         getParams()
-//        checkNetwork()
         setupSearch()
         return root
     }
@@ -93,14 +91,13 @@ class HomeFragment : Fragment() {
     }
 
     private fun getParams() {
-         bundle = arguments?.getParcelable("weather")
+        bundle = arguments?.getParcelable("weather")
 
         if (bundle == null) {
             observeState(homeViewModel)
         } else {
             handelWeather(bundle!!)
         }
-        arguments?.remove("weather")
     }
 
     private fun getFromDb() {
@@ -187,10 +184,8 @@ class HomeFragment : Fragment() {
             }
         }
 
-
         homeViewModel.viewStatse.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                Log.d("viewStatse", it.toString())
                 if (it)
                     mDigree = "${weatherEntity.list[0].main?.temp} °C"
                 else mDigree = "${weatherEntity.list[0].main?.fahrenheit} °F"
@@ -198,12 +193,16 @@ class HomeFragment : Fragment() {
         })
 
         textView.text = weatherEntity.city.name!!.trim()
-        binding.textTemp.text = if (useCase.invoke()) "${weatherEntity.list[0].main?.temp} °C" else "${weatherEntity.list[0].main?.fahrenheit} °F"
+        binding.textTemp.text =
+            if (useCase.invoke()) "${weatherEntity.list[0].main?.temp} °C" else "${weatherEntity.list[0].main?.fahrenheit} °F"
         binding.textTempDesc.text = weatherEntity.list[0].weather!![0].main
         binding.textHum.text = "${weatherEntity.list[0].main?.humidity} H"
 
         if (bundle == null) {
             listiners(weatherEntity)
+        } else {
+            arguments?.remove("weather")
+            bundle = null
         }
     }
 

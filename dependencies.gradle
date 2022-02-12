@@ -1,4 +1,5 @@
 ext {
+
     def retrofitVersion = "2.6.2"
     def gsonVersion = "2.8.5"
     def loggingVersion = "3.14.0"
@@ -12,6 +13,10 @@ ext {
 
     def workerVersion = "2.7.1"
     def picassoVersion = "2.71828"
+    def coroutineVersion = "1.4.1"
+
+    coroutineCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
+    coroutineAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
 
     retrofit = "com.squareup.retrofit2:retrofit:$retrofitVersion"
     gson = "com.google.code.gson:gson:$gsonVersion"

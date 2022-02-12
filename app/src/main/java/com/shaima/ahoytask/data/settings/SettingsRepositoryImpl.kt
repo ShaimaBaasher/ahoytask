@@ -2,11 +2,10 @@ package com.shaima.ahoytask.data.settings
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.shaima.ahoytask.domain.core.BaseResult
-import com.shaima.ahoytask.domain.settings.*
+import com.shaima.ahoytask.domain.settings.SettingRepository
 import javax.inject.Inject
 
-class SettingsRepositoryImpl  @Inject constructor(private val sharedPreferences: SharedPreferences) :
+class SettingsRepositoryImpl @Inject constructor(private val sharedPreferences: SharedPreferences) :
     SettingRepository {
 
     private val celsiusKey = "CELSIUS_KEY"
