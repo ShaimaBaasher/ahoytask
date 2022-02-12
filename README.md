@@ -32,5 +32,8 @@ Used http://api.openweathermap.org as a public api
         Supported offline mode
 
 ## TODO
+- Remove favourite from list
 - Add Timer for notifications
-- fix room duplicate data
+- Fix room duplicate data
+- Fix fahrenheit conversion
+- Fix clear local data
